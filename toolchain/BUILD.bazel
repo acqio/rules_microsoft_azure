@@ -1,0 +1,10 @@
+package(default_visibility = ["//visibility:private"])
+
+filegroup(
+    name = "all_files",
+    testonly = True,
+    srcs = glob(["**"]) + [
+        "//toolchain/az:all_files",
+    ],
+    visibility = ["//visibility:public"],
+)
