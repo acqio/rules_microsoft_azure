@@ -20,7 +20,7 @@ def _toolchain_configure_impl(repository_ctx):
         az_script_name,
         content = """#!/usr/bin/env bash
 # Immediately exit if any command fails.
-# set -e
+set -e
 export AZURE_EXTENSION_DIR="{0}"
 
 {1} $*
