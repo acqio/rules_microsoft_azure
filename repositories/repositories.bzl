@@ -11,4 +11,4 @@ def repositories():
 
     native.register_toolchains("@rules_microsoft_azure//toolchain/az:default_linux_toolchain")
 
-    az_toolchain_configure(name = "az_config")
+    az_toolchain_configure(name = "az")
