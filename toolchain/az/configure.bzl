@@ -5,7 +5,6 @@ def _toolchain_configure_impl(repository_ctx):
     else:
         fail("")
 
-    # é bom definir um diretório no cache para armazenar apenas as extenções, e não misturar com as que já existem na cli.
     azure_extension_dir = ""
     if repository_ctx.attr.azure_extension_dir:
         azure_extension_dir = repository_ctx.attr.azure_extension_dir
@@ -16,14 +15,34 @@ def _toolchain_configure_impl(repository_ctx):
     else:
         fail("")
 
-    print(az_path)
-    print(azure_extension_dir)
+    az_script_name = "az.sh"
+    repository_ctx.file(
+        az_script_name,
+        content = """#!/usr/bin/env bash
+# Immediately exit if any command fails.
+set -e
+export AZURE_EXTENSION_DIR="{0}"
+
+{1} $*
+""".format(azure_extension_dir, az_path),
+        executable = True,
+    )
+
     repository_ctx.template(
         "BUILD.bazel",
         Label("@rules_microsoft_azure//toolchain/az:BUILD.bazel.tpl"),
         {
             "%{AZ_PATH}": str(az_path),
             "%{AZURE_EXTENSION_DIR}": str(azure_extension_dir),
+        },
+        False,
+    )
+
+    repository_ctx.template(
+        "extension.bzl",
+        Label("@rules_microsoft_azure//toolchain/az:extension.bzl.tpl"),
+        {
+            "%{LABEL_SCRIPT_AZ}": "@%s//:%s" % (str(repository_ctx.name), str(az_script_name)),
         },
         False,
     )

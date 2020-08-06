@@ -6,19 +6,3 @@ filegroup(
     srcs = glob(["**"]),
     visibility = ["//visibility:public"],
 )
-
-genrule(
-    name = "az_genrule",
-    srcs = [],
-    outs = ["az.sh"],
-    cmd = """
-    echo -e 'AZURE_EXTENSION_DIR="$(AZURE_EXTENSION_DIR)" $(AZ_PATH) $$*' > \"$@\"
-    """,
-    toolchains = ["@az_config//:toolchain"],
-)
-
-sh_binary(
-    name = "az",
-    srcs = ["az.sh"],
-    visibility = ["//visibility:public"],
-)
