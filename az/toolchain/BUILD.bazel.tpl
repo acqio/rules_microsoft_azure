@@ -1,18 +1,20 @@
 """
 This BUILD file is auto-generated from toolchain/az/BUILD.bazel.tpl
 """
-load("@rules_microsoft_azure//toolchain/az:toolchain.bzl", "az_toolchain")
+
+load("@rules_microsoft_azure//az/toolchain:toolchains.bzl", "az_toolchain")
 
 az_toolchain(
     name = "toolchain",
-    az_path = "%{AZ_PATH}",
+    az_tool_path = "%{AZ_TOOL_PATH}",
+    az_tool_target = "%{AZ_TOOL_TARGET}",
     azure_extension_dir = "%{AZURE_EXTENSION_DIR}",
+    az_extensions_installed = %{AZ_EXTENSIONS_INSTALLED},
     visibility = ["//visibility:public"],
 )
 
 exports_files([
     "az.sh",
-    "extension.bzl",
 ])
 
 sh_binary(

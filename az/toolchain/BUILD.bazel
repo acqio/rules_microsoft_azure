@@ -17,7 +17,7 @@ toolchain(
         "@bazel_tools//platforms:linux",
         "@bazel_tools//platforms:x86_64",
     ],
-    toolchain = "@az_config//:toolchain",
+    toolchain = "@az//:toolchain",
     toolchain_type = ":toolchain_type",
     visibility = ["//visibility:public"],
 )
