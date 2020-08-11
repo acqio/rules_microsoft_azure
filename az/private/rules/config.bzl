@@ -1,4 +1,4 @@
-load("//az/providers:providers.bzl", "AzConfigInfo")
+load("//az:providers/providers.bzl", "AzConfigInfo")
 
 def _impl(ctx):
     return [
@@ -10,7 +10,7 @@ def _impl(ctx):
         ),
     ]
 
-az_config = rule(
+config = rule(
     implementation = _impl,
     attrs = {
         "debug": attr.bool(

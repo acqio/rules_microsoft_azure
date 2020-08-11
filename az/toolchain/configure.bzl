@@ -1,7 +1,7 @@
 load(":versions.bzl", "versions")
 load(":extensions.bzl", "extensions")
 
-MINIMUM_AZ_CLI_VERSION = "2.9.1"
+MINIMUM_AZ_CLI_VERSION = "2.10.1"
 
 def _toolchain_configure_impl(repository_ctx):
     az_path = ""
@@ -81,3 +81,5 @@ def toolchain_configure(azure_extension_dir = None, extensions = {}, timeout = N
         extensions = extensions,
         timeout = timeout,
     )
+
+    native.register_toolchains("@rules_microsoft_azure//az/toolchain:linux_toolchain")

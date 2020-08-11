@@ -1,7 +1,13 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("//az/providers:providers.bzl", "AzConfigInfo")
+load(
+    "//az:providers/providers.bzl",
+    "AzConfigInfo",
+    "AzToolchainInfo",
+)
+load("//az/private/common:common.bzl", "common")
 
+AZ_EXTENSION_NAME = "datafactory"
 _AZ_TOOLCHAIN = "@rules_microsoft_azure//az/toolchain:toolchain_type"
 
 _common_attr = {
@@ -15,11 +21,13 @@ _common_attr = {
 }
 
 def _impl(ctx):
-    #   print(ctx.toolchains[_AZ_TOOLCHAIN].info)
-    #   print(ctx.attr.config[AzConfigInfo])
-    print("outracoisa")
+    if not common.enable_rules(ctx.toolchains[_AZ_TOOLCHAIN].info.az_extensions_installed, AZ_EXTENSION_NAME):
+        fail("This extension '{}' is not enabled.\n".format(AZ_EXTENSION_NAME) +
+             "Configure the toolchain to enable this extension.")
 
-_az_datafactory = rule(
+    print("datafactory")
+
+_datafactory = rule(
     # executable = True,
     toolchains = [_AZ_TOOLCHAIN],
     implementation = _impl,
@@ -31,5 +39,5 @@ _az_datafactory = rule(
     ),
 )
 
-def az_datafactory(name, **kwargs):
-    _az_datafactory(name = name, **kwargs)
+def datafactory(name, **kwargs):
+    _datafactory(name = name, **kwargs)

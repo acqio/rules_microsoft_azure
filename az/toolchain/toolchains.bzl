@@ -1,4 +1,4 @@
-load("//az/providers:providers.bzl", "AzToolchainInfo")
+load("//az:providers/providers.bzl", "AzToolchainInfo")
 
 def _az_toolchain_impl(ctx):
     return [
