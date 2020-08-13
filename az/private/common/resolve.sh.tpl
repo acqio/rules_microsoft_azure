@@ -15,6 +15,4 @@
 # limitations under the License.
 set -euo pipefail
 
-function exe() { echo "\$ ${@/eval/}" ; "$@" ; }
-
-%{AZ_CLI_PATH} %{AZ_CMD} %{AZ_CMG_ARGS} %{AZ_GLOBAL_ARGS}
+%{JQ_CLI_PATH} %{JQ_CLI_CMD}

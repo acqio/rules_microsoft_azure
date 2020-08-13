@@ -3,6 +3,15 @@ load(":extensions.bzl", "extensions")
 
 MINIMUM_AZ_CLI_VERSION = "2.10.1"
 
+def _downloads(repository_ctx, url = None, sha256 = None, executabled = False, output = None):
+    repository_ctx.download(
+        url = url,
+        sha256 = sha256,
+        executable = executabled,
+        output = output,
+    )
+    return repository_ctx.path(output)
+
 def _toolchain_configure_impl(repository_ctx):
     az_path = ""
     if repository_ctx.which("az"):
@@ -37,6 +46,14 @@ export AZURE_EXTENSION_DIR="{0}"
     az_tool_target = "@%s//:%s" % (repository_ctx.name, az_script_name)
     az_tool_path = repository_ctx.path(az_script_name)
 
+    jq_tool_path = _downloads(
+        repository_ctx,
+        url = "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64",
+        sha256 = "af986793a515d500ab2d35f8d2aecd656e764504b789b66d7e1a0b727a124c44",
+        executabled = True,
+        output = "jq",
+    )
+
     repository_ctx.template(
         "BUILD.bazel",
         Label("@rules_microsoft_azure//az/toolchain:BUILD.bazel.tpl"),
@@ -45,6 +62,7 @@ export AZURE_EXTENSION_DIR="{0}"
             "%{AZ_TOOL_TARGET}": az_tool_target,
             "%{AZURE_EXTENSION_DIR}": azure_extension_dir,
             "%{AZ_EXTENSIONS_INSTALLED}": str(repository_ctx.attr.extensions),
+            "%{JQ_TOOL_PATH}": str(jq_tool_path),
         },
         False,
     )

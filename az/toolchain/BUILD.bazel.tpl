@@ -10,6 +10,7 @@ az_toolchain(
     az_tool_target = "%{AZ_TOOL_TARGET}",
     azure_extension_dir = "%{AZURE_EXTENSION_DIR}",
     az_extensions_installed = %{AZ_EXTENSIONS_INSTALLED},
+    jq_tool_path = "%{JQ_TOOL_PATH}",
     visibility = ["//visibility:public"],
 )
 
