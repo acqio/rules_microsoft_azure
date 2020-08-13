@@ -1,5 +1,5 @@
-load("//az/private:az/config.bzl", _az_config = "az_config")
-load("//az/private/az/datafactory:defs.bzl", _az_datafactory = "az_datafactory")
+load("//az/private:rules/config.bzl", _config = "config")
+load("//az/private:rules/datafactory/main.bzl", _datafactory = "datafactory")
 
-az_config = _az_config
-az_datafactory = _az_datafactory
+az_config = _config
+az_datafactory = _datafactory

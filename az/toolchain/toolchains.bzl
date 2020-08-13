@@ -1,4 +1,4 @@
-load("//az/providers:providers.bzl", "AzToolchainInfo")
+load("//az:providers/providers.bzl", "AzToolchainInfo")
 
 def _az_toolchain_impl(ctx):
     return [
@@ -8,11 +8,13 @@ def _az_toolchain_impl(ctx):
                 az_tool_target = ctx.attr.az_tool_target,
                 azure_extension_dir = ctx.attr.azure_extension_dir,
                 az_extensions_installed = ctx.attr.az_extensions_installed,
+                jq_tool_path = ctx.attr.jq_tool_path,
             ),
         ),
         platform_common.TemplateVariableInfo({
             "AZ_PATH": str(ctx.attr.az_tool_path),
             "AZURE_EXTENSION_DIR": str(ctx.attr.azure_extension_dir),
+            "JQ_PATH": str(ctx.attr.jq_tool_path),
         }),
     ]
 
@@ -30,5 +32,6 @@ az_toolchain = rule(
         "az_extensions_installed": attr.string_dict(
             allow_empty = True,
         ),
+        "jq_tool_path": attr.string(),
     },
 )
