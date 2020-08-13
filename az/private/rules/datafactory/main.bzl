@@ -3,9 +3,9 @@ load("@bazel_skylib//lib:paths.bzl", "paths")
 load(
     "//az:providers/providers.bzl",
     "AzConfigInfo",
-    "AzToolchainInfo",
 )
 load("//az/private/common:common.bzl", "common")
+load("//az/private:rules/datafactory/helpers.bzl", "helper")
 
 AZ_EXTENSION_NAME = "datafactory"
 _AZ_TOOLCHAIN = "@rules_microsoft_azure//az/toolchain:toolchain_type"
@@ -23,7 +23,7 @@ _common_attr = {
     ),
     "template": attr.label(
         mandatory = True,
-        allow_files = [".json"],
+        allow_single_file = [".json"],
     ),
     "config": attr.label(
         mandatory = True,
@@ -33,21 +33,20 @@ _common_attr = {
 
 def _impl(ctx):
     if common.check_enabled_extension(ctx.toolchains[_AZ_TOOLCHAIN].info.az_extensions_installed, AZ_EXTENSION_NAME):
-        files = []
-        files += ctx.files.template
-        templatefile = ctx.files.template[0]
-        substitutions_file = ctx.actions.declare_file(common.template_file_name(templatefile.basename))
+        template_file = ctx.file.template
+        files = [ctx.file.template]
+        substitutions_file = ctx.actions.declare_file(common.substitutions_file_name(ctx.attr.generator_name))
         files += [substitutions_file]
 
         args = ctx.actions.args()
         args.add(ctx.var["JQ_PATH"])
         args.add("-S --indent 4")
-        args.add(".properties.folder.name = \"{}\"".format(common.pipeline_folder(paths.dirname(ctx.build_file_path))))
-        args.add(templatefile.path)
+        args.add(".properties.folder.name = \"{}\"".format(helper.pipeline_folder(ctx)))
+        args.add(template_file.path)
         args.add(substitutions_file.path)
 
         ctx.actions.run_shell(
-            inputs = [templatefile],
+            inputs = [template_file],
             outputs = [substitutions_file],
             command = "$1 $2 \"$3\" $4 > $5",
             arguments = [args],
@@ -59,7 +58,7 @@ def _impl(ctx):
             template = ctx.file._template,
             substitutions = {
                 "%{JQ_CLI_PATH}": ctx.var["JQ_PATH"],
-                "%{JQ_CLI_CMD}": ". %s" % substitutions_file.short_path,
+                "%{JQ_CLI_CMD}": "-M . %s" % substitutions_file.short_path,
             },
         )
 
@@ -76,9 +75,17 @@ def _impl(ctx):
 def _common_impl(ctx):
     if common.check_enabled_extension(ctx.toolchains[_AZ_TOOLCHAIN].info.az_extensions_installed, AZ_EXTENSION_NAME):
         files = []
-        az_group_cmd = [AZ_EXTENSION_NAME, ctx.attr.subgroup, ctx.attr._action]
 
-        az_group_cmd_args = [
+        json_template_file = ""
+        if hasattr(ctx.attr, "resolved"):
+            json_template_file = ctx.attr.resolved[DefaultInfo].files.to_list()[0]
+            files = [json_template_file]
+
+        az_cmd = [AZ_EXTENSION_NAME, ctx.attr.subgroup, ctx.attr._action]
+        az_cli_global_args = [
+            ctx.attr.config[AzConfigInfo].global_args,
+        ]
+        az_cmd_args = [
             "--factory-name \"%s\"" % ctx.attr.factory_name,
             "--name \"%s\"" % ctx.attr.generator_name,
             "--resource-group \"%s\"" % ctx.attr.resource_group,
@@ -86,26 +93,18 @@ def _common_impl(ctx):
 
         if ctx.attr._action == "create":
             if ctx.attr.subgroup == "pipeline":
-                az_group_cmd_args.append("--pipeline")
-
-            json_template_file = ""
-
-            if hasattr(ctx.attr, "resolved"):
-                json_template_file = ctx.attr.resolved[DefaultInfo].files.to_list()[0]
-                files = [json_template_file]
-
-            if ctx.attr.subgroup == "pipeline":
-                az_group_cmd_args.append("--pipeline @%s" % json_template_file.short_path)
+                az_cmd_args.append("--pipeline")
+                az_cmd_args.append("@%s" % json_template_file.short_path)
 
         ctx.actions.expand_template(
             is_executable = True,
             output = ctx.outputs.executable,
             template = ctx.file._template,
             substitutions = {
-                "%{AZ_CLI_PATH}": "%s" % ctx.var["AZ_PATH"],
-                "%{AZ_CMD}": " ".join(az_group_cmd),
-                "%{AZ_CMG_ARGS}": " ".join(az_group_cmd_args),
-                "%{AZ_GLOBAL_ARGS}": ctx.attr.config[AzConfigInfo].global_args,
+                "%{AZ_CLI_PATH}": ctx.var["AZ_PATH"],
+                "%{AZ_CLI_CMD}": " ".join(az_cmd),
+                "%{AZ_CLI_GLOBAL_ARGS}": " ".join(az_cli_global_args),
+                "%{AZ_CLI_CMD_ARGS}": " ".join(az_cmd_args),
             },
         )
 

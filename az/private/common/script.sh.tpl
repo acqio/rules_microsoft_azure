@@ -17,4 +17,4 @@ set -euo pipefail
 
 function exe() { echo "\$ ${@/eval/}" ; "$@" ; }
 
-%{AZ_CLI_PATH} %{AZ_CMD} %{AZ_CMG_ARGS} %{AZ_GLOBAL_ARGS}
+%{AZ_CLI_PATH} %{AZ_CLI_CMD} %{AZ_CLI_GLOBAL_ARGS} %{AZ_CLI_CMD_ARGS}
