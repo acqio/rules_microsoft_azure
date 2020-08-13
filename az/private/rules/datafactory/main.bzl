@@ -41,7 +41,10 @@ def _impl(ctx):
         args = ctx.actions.args()
         args.add(ctx.var["JQ_PATH"])
         args.add("-S --indent 4")
-        args.add(".properties.folder.name = \"{}\"".format(helper.pipeline_folder(ctx)))
+        if ctx.attr.subgroup == "pipeline":
+            args.add(".properties.folder.name = \"{}\"".format(helper.pipeline_folder(ctx)))
+        else:
+            args.add(".".format(helper.pipeline_folder(ctx)))
         args.add(template_file.path)
         args.add(substitutions_file.path)
 
@@ -94,7 +97,9 @@ def _common_impl(ctx):
         if ctx.attr._action == "create":
             if ctx.attr.subgroup == "pipeline":
                 az_cmd_args.append("--pipeline")
-                az_cmd_args.append("@%s" % json_template_file.short_path)
+            else:
+                az_cmd_args.append("--properties")
+            az_cmd_args.append("@%s" % json_template_file.short_path)
 
         ctx.actions.expand_template(
             is_executable = True,
