@@ -65,5 +65,5 @@ bazel run @az//:cli -- login
 
 ## Rules
 
-[az_config](docs/az_config.md)
-[az_datafactory](docs/az_datafactory.md)
+* [az_config](docs/az_config.md)
+* [az_datafactory](docs/az_datafactory.md)
