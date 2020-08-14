@@ -1,0 +1,27 @@
+{
+  "properties": {
+      "activities": [
+          {
+              "name": "Set variable1",
+              "type": "SetVariable",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                  "variableName": "foo3",
+                  "value": "4242424"
+              }
+          }
+      ],
+      "variables": {
+          "foo3": {
+              "type": "String",
+              "defaultValue": "bar"
+          }
+      },
+      "folder": {
+          "name": "asd"
+      },
+      "annotations": [],
+      "lastPublishTime": "2020-08-12T18:56:44Z"
+  }
+}

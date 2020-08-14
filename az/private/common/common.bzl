@@ -20,6 +20,5 @@ common = struct(
     check_enabled_extension = _check_enabled_extension,
     enable_rules = _enable_rules,
     resolve_tpl = Label("//az/private/common:resolve.sh.tpl"),
-    script_tpl = Label("//az/private/common:script.sh.tpl"),
     substitutions_file_name = _substitutions_file_name,
 )

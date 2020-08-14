@@ -15,4 +15,6 @@
 # limitations under the License.
 set -euo pipefail
 
-%{JQ_CLI_PATH} %{JQ_CLI_CMD}
+function exe() { echo "\$ ${@/eval/}" ; "$@" ; }
+
+%{CLI_PATH} %{CLI_CMD}
