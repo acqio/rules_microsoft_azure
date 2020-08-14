@@ -1,19 +1,12 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
-load("@bazel_skylib//lib:paths.bzl", "paths")
-load(
-    "//az:providers/providers.bzl",
-    "AzConfigInfo",
-)
+load("//az:providers/providers.bzl", "AzConfigInfo")
 load("//az/private/common:common.bzl", "common")
 load("//az/private:rules/datafactory/helpers.bzl", "helper")
 
-AZ_EXTENSION_NAME = "datafactory"
-_AZ_TOOLCHAIN = "@rules_microsoft_azure//az/toolchain:toolchain_type"
-
 def _impl(ctx):
-    toolchain_info = ctx.toolchains[_AZ_TOOLCHAIN].info
+    extension = ctx.attr.generator_function
 
-    if common.check_enabled_extension(toolchain_info.az_extensions_installed, AZ_EXTENSION_NAME):
+    if common.check_enabled_extension(ctx, extension):
         substitutions_file = helper.resolved_template(ctx)
         files = [substitutions_file]
 
@@ -27,7 +20,7 @@ def _impl(ctx):
             az_group = ctx.attr.subgroup
 
             template_cmd = [
-                AZ_EXTENSION_NAME,
+                extension,
                 az_group,
                 az_action,
                 ctx.attr.config[AzConfigInfo].global_args,
@@ -86,6 +79,8 @@ _common_attr = {
         allow_single_file = [".json"],
     ),
 }
+
+_AZ_TOOLCHAIN = "@rules_microsoft_azure//az/toolchain:toolchain_type"
 
 _datafactory = rule(
     attrs = _common_attr,
