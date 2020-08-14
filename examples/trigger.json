@@ -1,0 +1,28 @@
+{
+    "properties": {
+        "annotations": [],
+        "runtimeState": "Started",
+        "pipelines": [
+            {
+                "pipelineReference": {
+                    "referenceName": "MonthlyRunner",
+                    "type": "PipelineReference"
+                },
+                "parameters": {
+                    "date": "@startOfMonth(trigger().scheduledTime, 'yyyy-MM-dd')",
+                    "env": "dev",
+                    "lastUpTime": true
+                }
+            }
+        ],
+        "type": "ScheduleTrigger",
+        "typeProperties": {
+            "recurrence": {
+                "frequency": "Hour",
+                "interval": 4,
+                "startTime": "2020-03-01T03:00:00Z",
+                "timeZone": "UTC"
+            }
+        }
+    }
+}
