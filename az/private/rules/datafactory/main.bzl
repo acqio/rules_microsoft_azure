@@ -17,11 +17,11 @@ def _impl(ctx):
 
         if hasattr(ctx.attr, "_action"):
             az_action = ctx.attr._action
-            az_group = ctx.attr.subgroup
+            az_resource = ctx.attr.resource
 
             template_cmd = [
                 extension,
-                az_group,
+                az_resource,
                 az_action,
                 ctx.attr.config[AzConfigInfo].global_args,
                 "--factory-name \"%s\"" % ctx.attr.factory_name,
@@ -32,7 +32,7 @@ def _impl(ctx):
             if az_action == "create":
                 template_cmd += [
                     "--%s @%s" % (
-                        "properties" if not az_group == "pipeline" else az_group,
+                        "properties" if not az_resource == "pipeline" else az_resource,
                         substitutions_file.short_path,
                     ),
                 ]
@@ -73,7 +73,7 @@ _common_attr = {
     "resource_group": attr.string(
         mandatory = True,
     ),
-    "subgroup": attr.string(
+    "resource": attr.string(
         mandatory = False,
         values = ["pipeline", "trigger"],
     ),
@@ -158,6 +158,6 @@ def datafactory(name, **kwargs):
     _datafactory_delete(name = name + ".delete", **kwargs)
     _datafactory_show(name = name + ".show", **kwargs)
 
-    if "subgroup" in kwargs and kwargs["subgroup"] == "trigger":
+    if "resource" in kwargs and kwargs["resource"] == "trigger":
         _datafactory_start(name = name + ".start", **kwargs)
         _datafactory_stop(name = name + ".stop", **kwargs)
