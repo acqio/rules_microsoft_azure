@@ -54,3 +54,16 @@ A rule for setting basic properties for other rules.
     </tr>
   </tbody>
 </table>
+
+## Examples
+
+```python
+load("@rules_microsoft_azure//az:def.bzl", "az_config")
+
+az_config(
+    name = "config",
+    debug = True,
+    subscription = "dev",
+    verbose = True,
+)
+```
