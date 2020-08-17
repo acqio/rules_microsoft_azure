@@ -18,7 +18,7 @@ def _resolved_template(ctx):
 
     args.add(ctx.var["JQ_PATH"])
     args.add("-S --indent 4")
-    if ctx.attr.subgroup == "pipeline":
+    if ctx.attr.resource == "pipeline":
         s_cmd = ".properties.folder.name = \"%s\"" % _pipeline_folder(ctx)
     args.add(s_cmd)
     args.add(tpl.path)

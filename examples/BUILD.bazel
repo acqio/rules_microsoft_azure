@@ -8,19 +8,19 @@ az_config(
 )
 
 az_datafactory(
-    name = "foo_pipeline",
+    name = "pipeline",
     config = ":dev",
     factory_name = "dev-wus2-datahub-df",
     resource_group = "dev-wus2-datahub-rg",
-    subgroup = "pipeline",
+    resource = "pipeline",
     template = ":pipeline.json",
 )
 
 az_datafactory(
-    name = "bar_trigger",
+    name = "trigger",
     config = ":dev",
     factory_name = "dev-wus2-datahub-df",
     resource_group = "dev-wus2-datahub-rg",
-    subgroup = "trigger",
+    resource = "trigger",
     template = ":trigger.json",
 )

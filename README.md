@@ -17,8 +17,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_microsoft_azure",
-    urls = ["https://github.com/acqio/rules_microsoft/archive/<revision>.tar.gz"],
-    strip_prefix = "rules_pip-<revision>",
+    urls = ["https://github.com/acqio/rules_microsoft_azure/archive/<revision>.tar.gz"],
+    strip_prefix = "rules_microsoft_azure-<revision>",
     sha256 = "rules_microsoft_azure-<revision>",
 )
 
@@ -64,3 +64,6 @@ bazel run @az//:cli -- login
 ```
 
 ## Rules
+
+* [az_config](docs/az_config.md) ([example](examples/BUILD.bazel))
+* [az_datafactory](docs/az_datafactory.md) ([example](examples/BUILD.bazel))
