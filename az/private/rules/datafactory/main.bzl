@@ -27,12 +27,15 @@ def _impl(ctx):
                 "--factory-name \"%s\"" % ctx.attr.factory_name,
                 "--name \"%s\"" % ctx.attr.generator_name,
                 "--resource-group \"%s\"" % ctx.attr.resource_group,
-            ] + [
-                "--%s @%s" % (
-                    "properties" if not (az_action == "create" and az_group == "pipeline") else az_group,
-                    substitutions_file.short_path,
-                ),
             ]
+
+            if az_action == "create":
+                template_cmd += [
+                    "--%s @%s" % (
+                        "properties" if not az_group == "pipeline" else az_group,
+                        substitutions_file.short_path,
+                    ),
+                ]
 
             template_substitutions = {
                 "%{CLI_PATH}": ctx.var["AZ_PATH"],
