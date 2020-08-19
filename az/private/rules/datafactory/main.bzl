@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("//az:providers/providers.bzl", "AzConfigInfo")
-load("//az/private/common:common.bzl", "common")
+load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
 load("//az/private:rules/datafactory/helpers.bzl", "helper")
 
 def _impl(ctx):
@@ -12,7 +12,7 @@ def _impl(ctx):
 
         template_substitutions = {
             "%{CLI_PATH}": ctx.var["JQ_PATH"],
-            "%{CLI_CMD}": "-M . %s" % substitutions_file.short_path,
+            "%{CMD}": "$CLI_PATH -M . %s" % substitutions_file.short_path,
         }
 
         if hasattr(ctx.attr, "_action"):
@@ -20,6 +20,7 @@ def _impl(ctx):
             az_resource = ctx.attr.resource
 
             template_cmd = [
+                "$CLI_PATH",
                 extension,
                 az_resource,
                 az_action,
@@ -39,7 +40,7 @@ def _impl(ctx):
 
             template_substitutions = {
                 "%{CLI_PATH}": ctx.var["AZ_PATH"],
-                "%{CLI_CMD}": " ".join(template_cmd),
+                "%{CMD}": " ".join(template_cmd),
             }
 
         ctx.actions.expand_template(
@@ -83,12 +84,10 @@ _common_attr = {
     ),
 }
 
-_AZ_TOOLCHAIN = "@rules_microsoft_azure//az/toolchain:toolchain_type"
-
 _datafactory = rule(
     attrs = _common_attr,
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 
@@ -100,7 +99,7 @@ _datafactory_create = rule(
         },
     ),
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 
@@ -112,7 +111,7 @@ _datafactory_delete = rule(
         },
     ),
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 
@@ -124,7 +123,7 @@ _datafactory_show = rule(
         },
     ),
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 
@@ -136,7 +135,7 @@ _datafactory_start = rule(
         },
     ),
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 
@@ -148,7 +147,7 @@ _datafactory_stop = rule(
         },
     ),
     executable = True,
-    toolchains = [_AZ_TOOLCHAIN],
+    toolchains = [AZ_TOOLCHAIN],
     implementation = _impl,
 )
 

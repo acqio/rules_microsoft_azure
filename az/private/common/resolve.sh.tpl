@@ -17,4 +17,6 @@ set -euo pipefail
 
 function exe() { echo "\$ ${@/eval/}" ; "$@" ; }
 
-%{CLI_PATH} %{CLI_CMD}
+CLI_PATH="%{CLI_PATH}"
+
+%{CMD}
