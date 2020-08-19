@@ -1,26 +1,9 @@
-load("@rules_microsoft_azure//az:def.bzl", "az_config", "az_datafactory")
+load("@rules_microsoft_azure//az:def.bzl", "az_config")
 
 az_config(
     name = "dev",
     debug = False,
-    subscription = "dev-engineering",
+    subscription = "julliano-goncalves",
     verbose = False,
-)
-
-az_datafactory(
-    name = "pipeline",
-    config = ":dev",
-    factory_name = "dev-wus2-datahub-df",
-    resource_group = "dev-wus2-datahub-rg",
-    resource = "pipeline",
-    template = ":pipeline.json",
-)
-
-az_datafactory(
-    name = "trigger",
-    config = ":dev",
-    factory_name = "dev-wus2-datahub-df",
-    resource_group = "dev-wus2-datahub-rg",
-    resource = "trigger",
-    template = ":trigger.json",
+    visibility = ["//visibility:public"],
 )
