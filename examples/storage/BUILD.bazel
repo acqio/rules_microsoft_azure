@@ -1,10 +1,5 @@
 load("@rules_microsoft_azure//az:def.bzl", "az_storage")
 
-exports_files([
-    "pipeline.json",
-    "trigger.json",
-])
-
 filegroup(
     name = "srcs",
     srcs = [

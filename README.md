@@ -66,4 +66,5 @@ bazel run @az//:cli -- login
 ## Rules
 
 * [az_config](docs/az_config.md) ([example](examples/BUILD.bazel))
-* [az_datafactory](docs/az_datafactory.md) ([example](examples/BUILD.bazel))
+* [az_datafactory](docs/az_datafactory.md) ([example](examples/datafactory/BUILD.bazel))
+* [az_storage](docs/az_storage.md) ([example](examples/storage/BUILD.bazel))
