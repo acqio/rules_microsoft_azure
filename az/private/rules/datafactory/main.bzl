@@ -26,7 +26,7 @@ def _impl(ctx):
                 az_action,
                 ctx.attr.config[AzConfigInfo].global_args,
                 "--factory-name \"%s\"" % ctx.attr.factory_name,
-                "--name \"%s\"" % ctx.attr.generator_name,
+                "--name \"%s\"" % ctx.attr.generator_name.split(".")[0],
                 "--resource-group \"%s\"" % ctx.attr.resource_group,
             ]
 
