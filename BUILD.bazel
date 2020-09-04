@@ -1,1 +1,6 @@
 package(default_visibility = ["//visibility:private"])
+
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/acqio/rules_microsoft_azure
+gazelle(name = "gazelle")

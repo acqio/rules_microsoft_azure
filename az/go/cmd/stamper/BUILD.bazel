@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["stamper.go"],
+    importpath = "github.com/acqio/rules_microsoft_azure/az/go/cmd/stamper",
+    visibility = ["//visibility:private"],
+    deps = ["//az/go/pkg/utils:go_default_library"],
+)
+
+go_binary(
+    name = "stamper",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
