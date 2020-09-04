@@ -65,7 +65,7 @@ A rule for setting basic properties for other rules.
 ## Examples
 
 ```python
-load("@rules_microsoft_azure//az:def.bzl", "az_config", "az_storage")
+load("@rules_microsoft_azure//az:defs.bzl", "az_config", "az_storage")
 
 genrule(
     name = "generate",
