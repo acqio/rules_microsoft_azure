@@ -6,8 +6,9 @@ az_datafactory(
     name,
     config,
     factory_name,
-    resource_group,
     resource,
+    resource_group,
+    resource_name,
     template
 )
 ```
@@ -47,6 +48,14 @@ A rule for setting basic properties for other rules.
       </td>
     </tr>
     <tr>
+      <td><code>resource</code></td>
+      <td>
+        <p><code>String, required</code></p>
+        <p>The type of the object in the DataFactory.</p>
+        <p>Supported values ​​are: <code>pipeline</code> and <code>trigger</code>.<p>
+      </td>
+    </tr>
+    <tr>
       <td><code>resource_group</code></td>
       <td>
         <p><code>String, required</code></p>
@@ -54,11 +63,10 @@ A rule for setting basic properties for other rules.
       </td>
     </tr>
     <tr>
-      <td><code>resource</code></td>
+      <td><code>resource_name</code></td>
       <td>
         <p><code>String, required</code></p>
-        <p>The type of the object in the DataFactory.</p>
-        <p>Supported values ​​are: <code>pipeline</code> and <code>trigger</code>.<p>
+        <p>The resource name (pipeline or trigger).</p>
       </td>
     </tr>
     <tr>
@@ -99,8 +107,9 @@ az_datafactory(
     name = "foo",
     config = ":config",
     factory_name = "foo-factory",
-    resource_group = "foo-factory-rg",
     resource = "pipeline",
+    resource_group = "foo-factory-rg",
+    resource_name = "foo",
     template = ":template",
 )
 ```

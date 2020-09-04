@@ -26,7 +26,7 @@ def _impl(ctx):
                 az_action,
                 ctx.attr.config[AzConfigInfo].global_args,
                 "--factory-name \"%s\"" % ctx.attr.factory_name,
-                "--name \"%s\"" % ctx.attr.generator_name.split(".")[0],
+                "--name \"%s\"" % ctx.attr.resource_name,
                 "--resource-group \"%s\"" % ctx.attr.resource_group,
             ]
 
@@ -71,12 +71,15 @@ _common_attr = {
     "factory_name": attr.string(
         mandatory = True,
     ),
-    "resource_group": attr.string(
-        mandatory = True,
-    ),
     "resource": attr.string(
         mandatory = False,
         values = ["pipeline", "trigger"],
+    ),
+    "resource_group": attr.string(
+        mandatory = True,
+    ),
+    "resource_name": attr.string(
+        mandatory = True,
     ),
     "template": attr.label(
         mandatory = True,
