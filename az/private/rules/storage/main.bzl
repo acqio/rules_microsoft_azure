@@ -9,17 +9,19 @@ def _impl(ctx):
     transitive_files += ctx.files.srcs
 
     if hasattr(ctx.attr, "_action"):
-        az_action = ctx.attr._action
-        az_account_name = ctx.attr.account_name.strip()
-        az_container_name = ctx.attr.container_name.strip()
         az_config = ctx.attr.config
+
+        az_action_arg = ctx.attr._action
+        az_account_name_arg = ctx.attr.account_name.strip()
+        az_container_name_arg = ctx.attr.container_name.strip()
+        az_global_args = az_config[AzConfigInfo].global_args
 
         transitive_files += az_config[DefaultInfo].default_runfiles.files.to_list()
 
         basecmd = "$CLI_PATH {ext} {az_action} {global_args}".format(
             ext = extension,
-            az_action = az_action,
-            global_args = az_config[AzConfigInfo].global_args,
+            az_action_arg = az_action_arg,
+            global_args = az_global_args,
         )
 
         template_cmd = []
@@ -29,16 +31,16 @@ def _impl(ctx):
             bazel_dirname = paths.dirname(bazel_path)
             args_cmd = []
 
-            if az_action == "remove":
+            if az_action_arg == "remove":
                 args_cmd = [
-                    "--account-name \"%s\"" % az_account_name,
-                    "--container-name \"%s\"" % az_container_name,
+                    "--account-name \"%s\"" % az_account_name_arg,
+                    "--container-name \"%s\"" % az_container_name_arg,
                     "--name \"%s\"" % bazel_path,
                 ]
             else:
                 args_cmd = [
-                    "--destination-account-name \"%s\"" % az_account_name,
-                    "--destination-container \"%s\"" % (paths.join(az_container_name, bazel_dirname)),
+                    "--destination-account-name \"%s\"" % az_account_name_arg,
+                    "--destination-container \"%s\"" % (paths.join(az_container_name_arg, bazel_dirname)),
                     "--source \"%s\"" % bazel_path,
                 ]
             template_cmd.append(" ".join([basecmd] + args_cmd))
