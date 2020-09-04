@@ -45,6 +45,7 @@ A rule for setting basic properties for other rules.
       <td>
         <p><code>String, required</code></p>
         <p>The factory name.</p>
+        <p>This field supports stamp variables.</p>
       </td>
     </tr>
     <tr>
@@ -60,6 +61,7 @@ A rule for setting basic properties for other rules.
       <td>
         <p><code>String, required</code></p>
         <p>Name of resource group.</p>
+        <p>This field supports stamp variables.</p>
       </td>
     </tr>
     <tr>

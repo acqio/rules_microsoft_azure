@@ -1,6 +1,7 @@
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("//az:providers/providers.bzl", "AzConfigInfo")
 load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
+load("//az/private/common:utils.bzl", "utils")
 load("//az/private:rules/datafactory/helpers.bzl", "helper")
 
 def _impl(ctx):
@@ -18,26 +19,44 @@ def _impl(ctx):
 
         if hasattr(ctx.attr, "_action"):
             az_config = ctx.attr.config
-            az_action = ctx.attr._action
-            az_resource = ctx.attr.resource
+
+            az_action_arg = ctx.attr._action
+            az_resource_arg = ctx.attr.resource
+            az_global_args = az_config[AzConfigInfo].global_args
 
             transitive_files += az_config[DefaultInfo].default_runfiles.files.to_list()
+
+            factory_name_arg = "--factory-name \"%s\"" % ctx.attr.factory_name
+
+            if utils.check_stamping_format(ctx.attr.factory_name):
+                factory_name_file = ctx.actions.declare_file(ctx.label.name + ".factory_name-name")
+                utils.resolve_stamp(ctx, ctx.attr.factory_name, factory_name_file)
+                factory_name_arg = "--factory-name $(cat \"%s\")" % factory_name_file.short_path
+                transitive_files.append(factory_name_file)
+
+            resource_group_arg = "--resource-group \"%s\"" % ctx.attr.resource_group
+
+            if utils.check_stamping_format(ctx.attr.resource_group):
+                resource_group_file = ctx.actions.declare_file(ctx.label.name + ".resource_group-name")
+                utils.resolve_stamp(ctx, ctx.attr.resource_group, resource_group_file)
+                resource_group_arg = "--resource-group $(cat \"%s\")" % resource_group_file.short_path
+                transitive_files.append(resource_group_file)
 
             template_cmd = [
                 "$CLI_PATH",
                 extension,
-                az_resource,
-                az_action,
-                az_config[AzConfigInfo].global_args,
-                "--factory-name \"%s\"" % ctx.attr.factory_name,
+                az_resource_arg,
+                az_action_arg,
+                az_global_args,
+                factory_name_arg,
                 "--name \"%s\"" % ctx.attr.resource_name,
-                "--resource-group \"%s\"" % ctx.attr.resource_group,
+                resource_group_arg,
             ]
 
-            if az_action == "create":
+            if az_action_arg == "create":
                 template_cmd += [
                     "--%s @%s" % (
-                        "properties" if not az_resource == "pipeline" else az_resource,
+                        "properties" if not az_resource_arg == "pipeline" else az_resource_arg,
                         substitutions_file.short_path,
                     ),
                 ]
@@ -68,6 +87,12 @@ _common_attr = {
     "_resolved": attr.label(
         default = common.resolve_tpl,
         allow_single_file = True,
+        cfg = "host",
+    ),
+    "_stamper": attr.label(
+        default = Label("//az/go/cmd/stamper"),
+        executable = True,
+        cfg = "host",
     ),
     "config": attr.label(
         mandatory = True,

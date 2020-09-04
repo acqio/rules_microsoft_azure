@@ -19,8 +19,3 @@ az_datafactory(
     resource_name = "bar",
     template = ":trigger.json",
 )
-
-exports_files([
-    "pipeline.json",
-    "trigger.json",
-])
