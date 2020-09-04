@@ -26,6 +26,6 @@ az_toolchain_configure(
 az_config(
     name = "dev",
     debug = False,
-    subscription = "dev-subscription",
+    subscription = "{STABLE_AZ_SUBSCRIPTION}",
     verbose = False,
 )

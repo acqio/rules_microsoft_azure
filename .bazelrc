@@ -1,1 +1,4 @@
 common --record_rule_instantiation_callstack
+
+build --workspace_status_command=tools/workspace_status.sh
+run --workspace_status_command=tools/workspace_status.sh
