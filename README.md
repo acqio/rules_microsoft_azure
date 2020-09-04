@@ -58,7 +58,7 @@ az_toolchain_configure(
 # This option is only an alias, since the purpose of this rule is only to define basic properties of execution of the Cli.
 az_config(
     name = "az_config_dev",
-    debug = False,]
+    debug = False,
     # This field supports stamp variables.
     # Reference: https://docs.bazel.build/versions/master/user-manual.html#flag--workspace_status_command
     subscription = "{STABLE_AZ_SUBSCRIPTION}",
