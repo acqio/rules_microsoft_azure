@@ -22,14 +22,20 @@ http_archive(
     sha256 = "rules_microsoft_azure-<revision>",
 )
 
+load("@rules_microsoft_azure//az/private:repositories.bzl", az_repositories = "repositories")
+
+az_repositories()
+
 load(
   "@rules_microsoft_azure//az:deps.bzl",
-  "az_rules_repositories",
+  "az_dependencies",
+  # OPTIONAL
+  "az_config",
   # OPTIONAL
   "az_toolchain_configure"
 )
 
-az_rules_repositories()
+az_dependencies()
 
 # BEGIN OPTIONAL segment:
 # These targets generate an executable to launch the Azure CLI.
@@ -45,6 +51,18 @@ az_toolchain_configure(
     },
     # OPTIONAL: Set the maximum duration for the extension manager to run in seconds. Default: 3600.
     timeout = 3600
+)
+
+# This is an option to configure the Azure CLI configuration in WORKSPACE.
+# The behavior must be the same as the az_config rule that can be defined in the project's BUILD.bazel.
+# This option is only an alias, since the purpose of this rule is only to define basic properties of execution of the Cli.
+az_config(
+    name = "az_config_dev",
+    debug = False,]
+    # This field supports stamp variables.
+    # Reference: https://docs.bazel.build/versions/master/user-manual.html#flag--workspace_status_command
+    subscription = "{STABLE_AZ_SUBSCRIPTION}",
+    verbose = False,
 )
 # BEGIN OPTIONAL.
 ```

@@ -43,6 +43,7 @@ A rule for setting basic properties for other rules.
         <p><code>String, required</code></p>
         <p>Name or ID of subscription.</p>
         <p>Obtain this information by running: <code>bazel run @az//:cli -- account list</code></p>
+        <p>This field supports stamp variables.</p>
       </td>
     </tr>
     <tr>
@@ -58,7 +59,7 @@ A rule for setting basic properties for other rules.
 ## Examples
 
 ```python
-load("@rules_microsoft_azure//az:def.bzl", "az_config")
+load("@rules_microsoft_azure//az:defs.bzl", "az_config")
 
 az_config(
     name = "config",
