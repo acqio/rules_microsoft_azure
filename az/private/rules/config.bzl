@@ -31,3 +31,32 @@ config = rule(
         ),
     },
 )
+
+def _impl_alias(repository_ctx):
+    repository_ctx.file(
+        "BUILD.bazel",
+        content = """
+load("@rules_microsoft_azure//az:defs.bzl", "az_config")
+
+az_config(
+    name = "config",
+    debug = {debug},
+    subscription = "{subscription}",
+    verbose = {verbose},
+    visibility = ["//visibility:public"],
+)
+""".format(
+            debug = repository_ctx.attr.debug,
+            subscription = repository_ctx.attr.subscription,
+            verbose = repository_ctx.attr.verbose,
+        ),
+    )
+
+config_alias = repository_rule(
+    implementation = _impl_alias,
+    attrs = {
+        "debug": attr.bool(default = False),
+        "subscription": attr.string(mandatory = True),
+        "verbose": attr.bool(default = False),
+    },
+)

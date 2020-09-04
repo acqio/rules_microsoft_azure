@@ -1,9 +1,1 @@
-load("@rules_microsoft_azure//az:def.bzl", "az_config")
-
-az_config(
-    name = "dev",
-    debug = False,
-    subscription = "julliano-goncalves",
-    verbose = False,
-    visibility = ["//visibility:public"],
-)
+package(default_visibility = ["//visibility:private"])
