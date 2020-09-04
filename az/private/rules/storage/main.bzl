@@ -5,23 +5,26 @@ load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
 
 def _impl(ctx):
     extension = ctx.attr.generator_function
-    files = []
-    files += ctx.files.srcs
+    transitive_files = []
+    transitive_files += ctx.files.srcs
 
     if hasattr(ctx.attr, "_action"):
         az_action = ctx.attr._action
         az_account_name = ctx.attr.account_name.strip()
         az_container_name = ctx.attr.container_name.strip()
+        az_config = ctx.attr.config
+
+        transitive_files += az_config[DefaultInfo].default_runfiles.files.to_list()
 
         basecmd = "$CLI_PATH {ext} {az_action} {global_args}".format(
             ext = extension,
             az_action = az_action,
-            global_args = ctx.attr.config[AzConfigInfo].global_args,
+            global_args = az_config[AzConfigInfo].global_args,
         )
 
         template_cmd = []
 
-        for fp in files:
+        for fp in ctx.files.srcs:
             bazel_path = fp.short_path
             bazel_dirname = paths.dirname(bazel_path)
             args_cmd = []
@@ -48,7 +51,7 @@ def _impl(ctx):
     else:
         template_substitutions = {
             "%{CLI_PATH}": "ls -ahls",
-            "%{CMD}": ";\n".join(["$CLI_PATH \"%s\"" % fp.short_path for fp in files]),
+            "%{CMD}": ";\n".join(["$CLI_PATH \"%s\"" % fp.short_path for fp in ctx.files.srcs]),
         }
 
     ctx.actions.expand_template(
@@ -61,7 +64,7 @@ def _impl(ctx):
     return [
         DefaultInfo(
             runfiles = ctx.runfiles(
-                transitive_files = depset(files),
+                transitive_files = depset(transitive_files),
             ),
             files = depset([ctx.outputs.executable]),
         ),

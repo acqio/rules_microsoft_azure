@@ -10,5 +10,5 @@ AzToolchainInfo = provider(
 )
 
 AzConfigInfo = provider(
-    fields = ["debug", "subscription", "verbose", "global_args"],
+    fields = ["debug", "global_args", "subscription", "verbose"],
 )

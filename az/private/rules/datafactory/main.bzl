@@ -9,6 +9,7 @@ def _impl(ctx):
     if common.check_enabled_extension(ctx, extension):
         substitutions_file = helper.resolved_template(ctx)
         files = [substitutions_file]
+        transitive_files = []
 
         template_substitutions = {
             "%{CLI_PATH}": ctx.var["JQ_PATH"],
@@ -16,15 +17,18 @@ def _impl(ctx):
         }
 
         if hasattr(ctx.attr, "_action"):
+            az_config = ctx.attr.config
             az_action = ctx.attr._action
             az_resource = ctx.attr.resource
+
+            transitive_files += az_config[DefaultInfo].default_runfiles.files.to_list()
 
             template_cmd = [
                 "$CLI_PATH",
                 extension,
                 az_resource,
                 az_action,
-                ctx.attr.config[AzConfigInfo].global_args,
+                az_config[AzConfigInfo].global_args,
                 "--factory-name \"%s\"" % ctx.attr.factory_name,
                 "--name \"%s\"" % ctx.attr.resource_name,
                 "--resource-group \"%s\"" % ctx.attr.resource_group,
@@ -54,6 +58,7 @@ def _impl(ctx):
             DefaultInfo(
                 runfiles = ctx.runfiles(
                     files = files,
+                    transitive_files = depset(transitive_files),
                 ),
                 files = depset(files + [ctx.outputs.executable]),
             ),
