@@ -6,6 +6,7 @@ az_datafactory(
     factory_name = "dev-wus2-datahub-df",
     resource = "pipeline",
     resource_group = "dev-wus2-datahub-rg",
+    resource_name = "foo",
     template = ":pipeline.json",
 )
 
@@ -15,6 +16,7 @@ az_datafactory(
     factory_name = "dev-wus2-datahub-df",
     resource = "trigger",
     resource_group = "dev-wus2-datahub-rg",
+    resource_name = "bar",
     template = ":trigger.json",
 )
 
