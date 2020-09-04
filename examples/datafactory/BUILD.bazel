@@ -1,8 +1,8 @@
-load("@rules_microsoft_azure//az:def.bzl", "az_config", "az_datafactory")
+load("@rules_microsoft_azure//az:defs.bzl", "az_datafactory")
 
 az_datafactory(
     name = "pipeline",
-    config = "//examples:dev",
+    config = "@dev//:config",
     factory_name = "dev-wus2-datahub-df",
     resource = "pipeline",
     resource_group = "dev-wus2-datahub-rg",
@@ -12,7 +12,7 @@ az_datafactory(
 
 az_datafactory(
     name = "trigger",
-    config = "//examples:dev",
+    config = "@dev//:config",
     factory_name = "dev-wus2-datahub-df",
     resource = "trigger",
     resource_group = "dev-wus2-datahub-rg",

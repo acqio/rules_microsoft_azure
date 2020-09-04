@@ -1,4 +1,4 @@
-load("@rules_microsoft_azure//az:def.bzl", "az_storage")
+load("@rules_microsoft_azure//az:defs.bzl", "az_storage")
 
 filegroup(
     name = "srcs",
@@ -14,6 +14,6 @@ az_storage(
         "//examples/storage/srcs:file.txt",
     ],
     account_name = "bazelstorageaccount",
-    config = "//examples:dev",
+    config = "@dev//:config",
     container_name = "tst",
 )
