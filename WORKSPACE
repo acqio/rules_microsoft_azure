@@ -1,6 +1,6 @@
 workspace(name = "rules_microsoft_azure")
 
-load("@rules_microsoft_azure//az/private:repositories.bzl", az_repositories = "repositories")
+load("@rules_microsoft_azure//az:repositories.bzl", az_repositories = "repositories")
 
 az_repositories()
 

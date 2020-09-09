@@ -22,7 +22,7 @@ http_archive(
     sha256 = "rules_microsoft_azure-<revision>",
 )
 
-load("@rules_microsoft_azure//az/private:repositories.bzl", az_repositories = "repositories")
+load("@rules_microsoft_azure//az:repositories.bzl", az_repositories = "repositories")
 
 az_repositories()
 
