@@ -13,7 +13,7 @@ az_storage(
         ":srcs",
         "//examples/storage/srcs:file.txt",
     ],
-    account_name = "bazelstorageaccount",
+    account_name = "{STABLE_ACCOUNT_NAME}",
     config = "@dev//:config",
-    container_name = "tst",
+    container_name = "{STABLE_CONTAINER_NAME}",
 )

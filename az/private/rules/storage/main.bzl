@@ -1,7 +1,8 @@
+load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
+load("//az/private/common:utils.bzl", "utils")
+load("//az:providers/providers.bzl", "AzConfigInfo")
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
-load("//az:providers/providers.bzl", "AzConfigInfo")
-load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
 
 def _impl(ctx):
     extension = ctx.attr.generator_function
@@ -10,15 +11,26 @@ def _impl(ctx):
 
     if hasattr(ctx.attr, "_action"):
         az_config = ctx.attr.config
-
-        az_action_arg = ctx.attr._action
-        az_account_name_arg = ctx.attr.account_name.strip()
-        az_container_name_arg = ctx.attr.container_name.strip()
-        az_global_args = az_config[AzConfigInfo].global_args
-
         transitive_files += az_config[DefaultInfo].default_runfiles.files.to_list()
 
-        basecmd = "$CLI_PATH {ext} {az_action} {global_args}".format(
+        az_action_arg = ctx.attr._action
+        az_global_args = az_config[AzConfigInfo].global_args
+
+        az_account_name_arg = ctx.attr.account_name.strip()
+        if utils.check_stamping_format(ctx.attr.account_name):
+            az_account_name_file = ctx.actions.declare_file(ctx.label.name + ".account-name")
+            utils.resolve_stamp(ctx, ctx.attr.account_name, az_account_name_file)
+            az_account_name_arg = "$(cat %s)" % az_account_name_file.short_path
+            transitive_files.append(az_account_name_file)
+
+        az_container_name_arg = ctx.attr.container_name.strip()
+        if utils.check_stamping_format(ctx.attr.container_name):
+            az_container_name_file = ctx.actions.declare_file(ctx.label.name + ".container-name")
+            utils.resolve_stamp(ctx, ctx.attr.container_name, az_container_name_file)
+            az_container_name_arg = "$(cat %s)" % az_container_name_file.short_path
+            transitive_files.append(az_container_name_file)
+
+        basecmd = "$CLI_PATH {ext} {az_action_arg} {global_args}".format(
             ext = extension,
             az_action_arg = az_action_arg,
             global_args = az_global_args,
@@ -76,6 +88,11 @@ _common_attr = {
     "_resolved": attr.label(
         default = common.resolve_tpl,
         allow_single_file = True,
+    ),
+    "_stamper": attr.label(
+        default = Label("//az/go/cmd/stamper"),
+        executable = True,
+        cfg = "host",
     ),
     "config": attr.label(
         mandatory = True,
