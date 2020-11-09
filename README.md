@@ -30,9 +30,9 @@ load(
   "@rules_microsoft_azure//az:deps.bzl",
   "az_dependencies",
   # OPTIONAL
-  "az_config",
+  "az_toolchain_configure",
   # OPTIONAL
-  "az_toolchain_configure"
+  "az_config",
 )
 
 az_dependencies()

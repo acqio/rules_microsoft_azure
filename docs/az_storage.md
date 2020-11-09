@@ -43,6 +43,7 @@ A rule for setting basic properties for other rules.
       <td>
         <p><code>String, required</code></p>
         <p>Storage account name.</p>
+        <p>This field supports stamp variables.</p>
       </td>
     </tr>
     <tr>
@@ -50,6 +51,7 @@ A rule for setting basic properties for other rules.
       <td>
         <p><code>String, required</code></p>
         <p>Container name to copy or remove sources. </p>
+        <p>This field supports stamp variables.</p>
       </td>
     </tr>
     <tr>
