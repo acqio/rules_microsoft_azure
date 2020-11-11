@@ -1,4 +1,3 @@
 exports_files([
-    "script.sh.tpl",
     "resolve.sh.tpl",
 ])
