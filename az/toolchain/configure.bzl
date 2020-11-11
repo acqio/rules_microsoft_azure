@@ -58,10 +58,10 @@ export AZURE_EXTENSION_DIR="{0}"
         "BUILD.bazel",
         Label("@rules_microsoft_azure//az/toolchain:BUILD.bazel.tpl"),
         {
-            "%{AZ_TOOL_PATH}": str(az_tool_path),
-            "%{AZ_TOOL_TARGET}": az_tool_target,
             "%{AZURE_EXTENSION_DIR}": azure_extension_dir,
             "%{AZ_EXTENSIONS_INSTALLED}": str(repository_ctx.attr.extensions),
+            "%{AZ_TOOL_PATH}": str(az_tool_path),
+            "%{AZ_TOOL_TARGET}": az_tool_target,
             "%{JQ_TOOL_PATH}": str(jq_tool_path),
         },
         False,

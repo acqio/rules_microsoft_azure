@@ -1,11 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def repositories():
+    bazel_skylib_version = "1.0.2"
+    bazel_skylib_sha = "e5d90f0ec952883d56747b7604e2a15ee36e288bb556c3d0ed33e818a4d971f2"
     http_archive(
         name = "bazel_skylib",
-        urls = ["https://github.com/bazelbuild/bazel-skylib/archive/1.0.2.tar.gz"],
-        sha256 = "e5d90f0ec952883d56747b7604e2a15ee36e288bb556c3d0ed33e818a4d971f2",
-        strip_prefix = "bazel-skylib-1.0.2",
+        urls = ["https://github.com/bazelbuild/bazel-skylib/archive/%s.tar.gz" % bazel_skylib_version],
+        sha256 = bazel_skylib_sha,
+        strip_prefix = "bazel-skylib-%s" % bazel_skylib_version,
     )
 
     io_bazel_rules_go_version = "0.23.5"

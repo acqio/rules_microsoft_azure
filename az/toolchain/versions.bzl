@@ -25,6 +25,6 @@ def _check_az_cli_version(az_cli_version = None, minimum_az_cli_version = None):
         ))
 
 versions = struct(
-    get_az_cli_version = _get_az_cli_version,
     check_az_cli_version = _check_az_cli_version,
+    get_az_cli_version = _get_az_cli_version,
 )
