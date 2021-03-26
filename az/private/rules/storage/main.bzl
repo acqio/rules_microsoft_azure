@@ -38,24 +38,33 @@ def _impl(ctx):
 
         template_cmd = []
 
-        for fp in ctx.files.srcs:
-            bazel_path = fp.short_path
-            bazel_dirname = paths.dirname(bazel_path)
-            args_cmd = []
+        for (srcs, dest_path) in ctx.attr.srcs.items():
+            for fp in srcs.files.to_list():
+                bazel_path = fp.short_path
+                az_dest_path = paths.normalize(dest_path.strip())
 
-            if az_action_arg == "remove":
-                args_cmd = [
-                    "--account-name \"%s\"" % az_account_name_arg,
-                    "--container-name \"%s\"" % az_container_name_arg,
-                    "--name \"%s\"" % bazel_path,
-                ]
-            else:
-                args_cmd = [
-                    "--destination-account-name \"%s\"" % az_account_name_arg,
-                    "--destination-container \"%s\"" % (paths.join(az_container_name_arg, bazel_dirname)),
-                    "--source \"%s\"" % bazel_path,
-                ]
-            template_cmd.append(" ".join([basecmd] + args_cmd))
+                dest = az_container_name_arg
+                if az_dest_path.startswith("/"):
+                    dest = dest + az_dest_path
+                elif az_dest_path.startswith("."):
+                    dest = az_container_name_arg + "/"
+                else:
+                    dest = paths.join(dest, az_dest_path) + "/"
+
+                args_cmd = []
+                if az_action_arg == "remove":
+                    args_cmd = [
+                        "--account-name \"%s\"" % az_account_name_arg,
+                        "--container-name \"%s\"" % az_container_name_arg,
+                        "--name \"%s\"" % bazel_path,
+                    ]
+                else:
+                    args_cmd = [
+                        "--destination-account-name \"%s\"" % az_account_name_arg,
+                        "--destination-container \"%s\"" % dest,
+                        "--source \"%s\"" % bazel_path,
+                    ]
+                template_cmd.append(" ".join([basecmd] + args_cmd))
 
         template_substitutions = {
             "%{CLI_PATH}": ctx.var["AZ_PATH"],
@@ -94,17 +103,17 @@ _common_attr = {
         executable = True,
         cfg = "host",
     ),
+    "account_name": attr.string(
+        mandatory = True,
+    ),
     "config": attr.label(
         mandatory = True,
         providers = [AzConfigInfo],
     ),
-    "account_name": attr.string(
-        mandatory = True,
-    ),
     "container_name": attr.string(
         mandatory = True,
     ),
-    "srcs": attr.label_list(
+    "srcs": attr.label_keyed_string_dict(
         mandatory = True,
         allow_files = True,
     ),
