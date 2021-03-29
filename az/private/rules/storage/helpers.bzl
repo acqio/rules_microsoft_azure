@@ -1,6 +1,6 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 
-def _resolved_destination_container(src, container_name, container_path):
+def _destination_container(src, container_name, container_path):
     container_path = paths.normalize(container_path.strip())
     src_basename = paths.basename(src.short_path)
 
@@ -17,5 +17,5 @@ def _resolved_destination_container(src, container_name, container_path):
     return struct(destination = destination, filepath = src_filepath)
 
 helper = struct(
-    resolved_destination_container = _resolved_destination_container,
+    resolve_destination_container = _destination_container,
 )

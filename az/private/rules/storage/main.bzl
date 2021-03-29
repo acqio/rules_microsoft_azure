@@ -42,7 +42,7 @@ def _impl(ctx):
         for (srcs, container_path) in ctx.attr.srcs.items():
             for src in srcs.files.to_list():
                 args_cmd = []
-                destination_container = helper.resolved_destination_container(
+                destination_container = helper.resolve_destination_container(
                     src,
                     az_container_name_arg,
                     container_path,
