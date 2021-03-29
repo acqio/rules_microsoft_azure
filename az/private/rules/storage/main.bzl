@@ -1,6 +1,7 @@
 load("//az/private/common:common.bzl", "AZ_TOOLCHAIN", "common")
 load("//az/private/common:utils.bzl", "utils")
 load("//az:providers/providers.bzl", "AzConfigInfo")
+load("//az/private:rules/storage/helpers.bzl", "helper")
 load("@bazel_skylib//lib:dicts.bzl", "dicts")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 
@@ -30,7 +31,7 @@ def _impl(ctx):
             az_container_name_arg = "$(cat %s)" % az_container_name_file.short_path
             transitive_files.append(az_container_name_file)
 
-        basecmd = "$CLI_PATH {ext} {az_action_arg} {global_args}".format(
+        tpl_cmd = "$CLI_PATH {ext} {az_action_arg} {global_args}".format(
             ext = extension,
             az_action_arg = az_action_arg,
             global_args = az_global_args,
@@ -38,33 +39,28 @@ def _impl(ctx):
 
         template_cmd = []
 
-        for (srcs, dest_path) in ctx.attr.srcs.items():
-            for fp in srcs.files.to_list():
-                bazel_path = fp.short_path
-                az_dest_path = paths.normalize(dest_path.strip())
-
-                dest = az_container_name_arg
-                if az_dest_path.startswith("/"):
-                    dest = dest + az_dest_path
-                elif az_dest_path.startswith("."):
-                    dest = az_container_name_arg + "/"
-                else:
-                    dest = paths.join(dest, az_dest_path) + "/"
-
+        for (srcs, container_path) in ctx.attr.srcs.items():
+            for src in srcs.files.to_list():
                 args_cmd = []
+                destination_container = helper.resolved_destination_container(
+                    src,
+                    az_container_name_arg,
+                    container_path,
+                )
+
                 if az_action_arg == "remove":
                     args_cmd = [
                         "--account-name \"%s\"" % az_account_name_arg,
                         "--container-name \"%s\"" % az_container_name_arg,
-                        "--name \"%s\"" % bazel_path,
+                        "--name \"%s\"" % destination_container.filepath,
                     ]
                 else:
                     args_cmd = [
                         "--destination-account-name \"%s\"" % az_account_name_arg,
-                        "--destination-container \"%s\"" % dest,
-                        "--source \"%s\"" % bazel_path,
+                        "--destination-container \"%s\"" % destination_container.destination,
+                        "--source \"%s\"" % src.short_path,
                     ]
-                template_cmd.append(" ".join([basecmd] + args_cmd))
+                template_cmd.append(" ".join([tpl_cmd] + args_cmd))
 
         template_substitutions = {
             "%{CLI_PATH}": ctx.var["AZ_PATH"],
