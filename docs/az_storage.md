@@ -57,8 +57,9 @@ A rule for setting basic properties for other rules.
     <tr>
       <td><code>srcs</code></td>
       <td>
-        <p><code>Label List, required</code></p>
+        <p><code>Label keyed String Dict, required</code></p>
         <p>The list of targets that have a file to be copy or removed from a Container.</p>
+        <p>The path to the file in the storage account will be the target value defined in the dictionary.</p>
       </td>
     </tr>
   </tbody>
@@ -91,9 +92,9 @@ az_config(
 
 az_storage(
     name = "foo",
-    srcs = [
-        ":generate",
-    ],
+    srcs = {
+        ":generate": "path/to/container/",
+    },
     account_name = "bar",
     config = ":config",
     container_name = "baz",
