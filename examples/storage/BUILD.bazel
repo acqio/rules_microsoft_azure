@@ -10,8 +10,8 @@ filegroup(
 az_storage(
     name = "storage",
     srcs = {
-        ":srcs": "",
-        "//examples/storage/srcs:file.txt": "/algumacoisa/",
+        ":srcs": "srcs/",
+        "//examples/storage/srcs:file.txt": "foo/srcs",
     },
     account_name = "{STABLE_ACCOUNT_NAME}",
     config = "@dev//:config",
